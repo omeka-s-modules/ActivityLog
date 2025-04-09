@@ -23,10 +23,10 @@ class EventController extends AbstractActionController
             $this->params()->fromQuery('page'),
             $perPage
         );
-        $events = $response->getContent();
+        $loggedEvents = $response->getContent();
 
         $view = new ViewModel;
-        $view->setVariable('events', $events);
+        $view->setVariable('loggedEvents', $loggedEvents);
         return $view;
     }
 }

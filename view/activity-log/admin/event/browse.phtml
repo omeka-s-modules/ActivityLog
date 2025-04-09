@@ -1,0 +1,52 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'activity-log-events'); ?>
+
+<?php echo $this->pageTitle($this->translate('Events'), 1, $this->translate('Activity Log')); ?>
+
+<div class="browse-controls">
+    <?php echo $this->pagination(); ?>
+</div>
+
+<?php if ($loggedEvents): ?>
+
+<table class="tablesaw" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('ID'); ?></th>
+            <th><?php echo $this->translate('Date'); ?></th>
+            <th><?php echo $this->translate('User'); ?></th>
+            <th><?php echo $this->translate('IP address'); ?></th>
+            <th><?php echo $this->translate('Event'); ?></th>
+            <th><?php echo $this->translate('Resource'); ?></th>
+            <th><?php echo $this->translate('Resource ID'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($loggedEvents as $loggedEvent): ?>
+        <?php
+        $dateTime = new DateTime('@' . $loggedEvent->created());
+        $user = $loggedEvent->user();
+        ?>
+        <tr>
+            <td><?php echo $loggedEvent->id(); ?></td>
+            <td><?php echo $dateTime->format('Y-m-d H:i:s.v'); ?></td>
+            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->displayRole()) : ''; ?></td>
+            <td><?php echo $loggedEvent->ip(); ?></td>
+            <td><?php echo $loggedEvent->event(); ?></td>
+            <td><?php echo $loggedEvent->resource(); ?></td>
+            <td><?php echo $loggedEvent->resourceId(); ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div class="browse-controls">
+    <?php echo $this->pagination(); ?>
+</div>
+
+<?php else: ?>
+
+<div class="no-resources">
+    <p><?php echo $this->translate('No events found.'); ?></p>
+</div>
+
+<?php endif; ?>

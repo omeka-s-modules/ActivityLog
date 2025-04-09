@@ -67,10 +67,10 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'eventData', 'resource', 'resourceId', 'resourceData'];
+            return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceId', 'data'];
         }
 
-        return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'eventData', 'resource', 'resourceId', 'resourceData'];
+        return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceId', 'data'];
     }
 
     /**
@@ -283,28 +283,6 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     /**
      * {@inheritDoc}
      */
-    public function setEventData(?array $eventData): void
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEventData', [$eventData]);
-
-        parent::setEventData($eventData);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEventData(): ?array
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEventData', []);
-
-        return parent::getEventData();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setResource(?string $resource): void
     {
 
@@ -349,23 +327,23 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     /**
      * {@inheritDoc}
      */
-    public function setResourceData(?array $resourceData): void
+    public function setData(?array $data): void
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setResourceData', [$resourceData]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setData', [$data]);
 
-        parent::setResourceData($resourceData);
+        parent::setData($data);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getResourceData(): ?array
+    public function getData(): ?array
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getResourceData', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getData', []);
 
-        return parent::getResourceData();
+        return parent::getData();
     }
 
 }

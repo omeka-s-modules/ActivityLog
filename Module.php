@@ -20,7 +20,7 @@ class Module extends AbstractModule
     public function install(ServiceLocatorInterface $services)
     {
         $sql = <<<'SQL'
-CREATE TABLE activity_log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, created DOUBLE PRECISION NOT NULL, ip VARCHAR(45) DEFAULT NULL, event VARCHAR(255) NOT NULL, event_data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)', resource VARCHAR(255) DEFAULT NULL, resource_id VARCHAR(255) DEFAULT NULL, resource_data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)', INDEX IDX_FCC8C64DA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
+CREATE TABLE activity_log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, created DOUBLE PRECISION NOT NULL, ip VARCHAR(45) DEFAULT NULL, event VARCHAR(255) NOT NULL, resource VARCHAR(255) DEFAULT NULL, resource_id VARCHAR(255) DEFAULT NULL, data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)', INDEX IDX_FCC8C64DA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 ALTER TABLE activity_log_event ADD CONSTRAINT FK_FCC8C64DA76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL;
 SQL;
         $conn = $services->get('Omeka\Connection');
@@ -93,29 +93,30 @@ SQL;
                         return;
                     }
                     $entity = $response->getContent();
-                    $eventData = [
+                    $data = [
                         'request_options' => $request->getOption(),
+                        'request_content' => $request->getContent(),
                     ];
-
                     $logEvent = new ActivityLogEvent;
                     $logEvent->setEvent($event->getName());
-                    $logEvent->setEventData($eventData);
                     $logEvent->setResource($request->getResource());
                     $logEvent->setResourceId($entity->getId());
-                    $logEvent->setResourceData($request->getContent());
+                    $logEvent->setData($data);
                     $this->logEvent($logEvent);
                 }
             );
         }
         /**
          * Log media creation.
+         *
+         * Note that api.create.post does not trigger during media creation
+         * becuase it's a subrequest of item create/update.
          */
         $sharedEventManager->attach(
             'Omeka\Entity\Media',
             'entity.persist.post',
             function (Event $event) {
                 $entity = $event->getTarget();
-
                 $logEvent = new ActivityLogEvent;
                 $logEvent->setEvent($event->getName());
                 $logEvent->setResource($entity::class);
@@ -127,9 +128,9 @@ SQL;
          * Log API adapter batch events.
          */
         $eventNames = [
-            'api.batch_create.pre',
-            'api.batch_update.pre',
-            'api.batch_delete.pre',
+            'api.batch_create.post',
+            'api.batch_update.post',
+            'api.batch_delete.post',
         ];
         foreach ($eventNames as $eventName) {
             $sharedEventManager->attach(
@@ -138,17 +139,15 @@ SQL;
                 function (Event $event) {
                     $adapter = $event->getTarget();
                     $request = $event->getParam('request');
-                    $eventData = [
+                    $data = [
                         'request_options' => $request->getOption(),
                         'request_ids' => $request->getIds(),
+                        'request_content' => $adapter->preprocessBatchUpdate([], $request),
                     ];
-                    $resourceData = $adapter->preprocessBatchUpdate([], $request);
-
                     $logEvent = new ActivityLogEvent;
                     $logEvent->setEvent($event->getName());
-                    $logEvent->setEventData($eventData);
                     $logEvent->setResource($request->getResource());
-                    $logEvent->setResourceData($resourceData);
+                    $logEvent->setData($data);
                     $this->logEvent($logEvent);
                 }
             );
@@ -158,9 +157,9 @@ SQL;
     /**
      * Log an event.
      *
-     * Note that, to optimize the process, we use the connection and not the
-     * entity manager to persist the event in the database. We only use the
-     * ActivityLogEvent entity to pass data into this method efficiently.
+     * Note that, to optimize the INSERT query, we use the connection instead of
+     * the entity manager to persist the event. We only use the ActivityLogEvent
+     * entity to efficiently pass data into this method.
      */
     public function logEvent(ActivityLogEvent $logEvent) {
         $services = $this->getServiceLocator();
@@ -177,17 +176,15 @@ SQL;
         $conn = $services->get('Omeka\Connection');
         try {
             $user = $logEvent->getUser();
-            $eventData = $logEvent->getEventData();
-            $resourceData = $logEvent->getResourceData();
+            $data = $logEvent->getData();
             $conn->insert('activity_log_event', [
                 'created' => microtime(true),
                 'user_id' => $user ? $user->getId() : null,
                 'ip' => $_SERVER['REMOTE_ADDR'],
                 'event' => $logEvent->getEvent(),
-                'event_data' => $eventData ? json_encode($eventData) : null,
                 'resource' => $logEvent->getResource(),
                 'resource_id' => $logEvent->getResourceId(),
-                'resource_data' => $resourceData ? json_encode($resourceData) : null,
+                'data' => $data ? json_encode($data) : null,
             ]);
         } catch (DbalException $e) {
             // Catch DBAL exceptions and log them instead of breaking the page.

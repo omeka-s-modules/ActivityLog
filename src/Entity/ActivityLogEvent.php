@@ -68,17 +68,6 @@ class ActivityLogEvent extends AbstractEntity
 
     /**
      * @Column(
-     *     type="json",
-     *     nullable=true,
-     *     options={
-     *         "default"=null
-     *     }
-     * )
-     */
-    protected $eventData;
-
-    /**
-     * @Column(
      *     type="string",
      *     length=255,
      *     nullable=true,
@@ -110,7 +99,7 @@ class ActivityLogEvent extends AbstractEntity
      *     }
      * )
      */
-    protected $resourceData;
+    protected $data;
 
     public function getId()
     {
@@ -157,16 +146,6 @@ class ActivityLogEvent extends AbstractEntity
         return $this->event;
     }
 
-    public function setEventData(?array $eventData): void
-    {
-        $this->eventData = $eventData;
-    }
-
-    public function getEventData(): ?array
-    {
-        return $this->eventData;
-    }
-
     public function setResource(?string $resource): void
     {
         $this->resource = $resource;
@@ -187,13 +166,13 @@ class ActivityLogEvent extends AbstractEntity
         return $this->resourceId;
     }
 
-    public function setResourceData(?array $resourceData): void
+    public function setData(?array $data): void
     {
-        $this->resourceData = $resourceData;
+        $this->data = $data;
     }
 
-    public function getResourceData(): ?array
+    public function getData(): ?array
     {
-        return $this->resourceData;
+        return $this->data;
     }
 }
