@@ -117,8 +117,8 @@ SQL;
                 $entity = $event->getTarget();
 
                 $logEvent = new ActivityLogEvent;
-                $logEvent->setEvent('api.create.post');
-                $logEvent->setResource('media');
+                $logEvent->setEvent($event->getName());
+                $logEvent->setResource($entity::class);
                 $logEvent->setResourceId($entity->getId());
                 $this->logEvent($logEvent);
             }
