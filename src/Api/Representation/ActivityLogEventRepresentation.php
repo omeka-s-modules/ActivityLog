@@ -65,7 +65,7 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
 
     public function resourceId()
     {
-        return $this->resource->getResourceId();
+        return $this->resource->getResourceIdentifier();
     }
 
     public function data()

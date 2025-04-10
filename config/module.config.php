@@ -62,6 +62,11 @@ return [
                         'controller' => 'event',
                         'visible' => false,
                     ],
+                    [
+                        'route' => 'admin/activity-log/id',
+                        'controller' => 'event',
+                        'visible' => false,
+                    ],
                 ],
             ],
         ],
@@ -92,6 +97,20 @@ return [
                                     ],
                                     'defaults' => [
                                         'action' => 'index',
+                                    ],
+                                ],
+                            ],
+                            'id' => [
+                                'type' => Http\Segment::class,
+                                'options' => [
+                                    'route' => '/:controller/:id[/:action]',
+                                    'constraints' => [
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '\d+',
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'show',
                                     ],
                                 ],
                             ],

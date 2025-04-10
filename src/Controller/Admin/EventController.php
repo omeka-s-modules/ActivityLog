@@ -33,4 +33,14 @@ class EventController extends AbstractActionController
         $view->setVariable('eventFilterForm', $eventFilterForm);
         return $view;
     }
+
+    public function showDetailsAction()
+    {
+        $loggedEvent = $this->api()->read('activity_log_event', $this->params('id'))->getContent();
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('loggedEvent', $loggedEvent);
+        return $view;
+    }
 }

@@ -56,7 +56,14 @@
             <td><?php echo $this->hyperlink($loggedEvent->ip(), sprintf('https://whatismyipaddress.com/ip/%s', $loggedEvent->ip()), ['target' => '_blank']); ?></td>
             <td><?php echo $loggedEvent->event(); ?></td>
             <td><?php echo $loggedEvent->resource(); ?></td>
-            <td><?php echo implode('<br>', $eventParams['messages']); ?></td>
+            <td>
+                <?php echo implode('<br>', $eventParams['messages']); ?>
+                <div><?php echo $this->hyperlink($this->translate('View event data'), '#', [
+                    'data-sidebar-selector' => '#show-details',
+                    'data-sidebar-content-url' => $this->url('admin/activity-log/id', ['action' => 'show-details', 'id' => $loggedEvent->id()], true),
+                    'class' => 'sidebar-content',
+                ]); ?></div>
+            </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
@@ -64,6 +71,14 @@
 
 <div class="browse-controls">
     <?php echo $this->pagination(); ?>
+</div>
+
+<div id="show-details" class="sidebar">
+    <?php echo $this->hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $this->translate('Close'),
+    ]); ?>
+    <div class="sidebar-content"></div>
 </div>
 
 <?php else: ?>

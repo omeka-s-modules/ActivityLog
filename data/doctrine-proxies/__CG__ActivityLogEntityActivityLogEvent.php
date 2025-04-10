@@ -67,10 +67,10 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceId', 'data'];
+            return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
         }
 
-        return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceId', 'data'];
+        return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
     }
 
     /**
@@ -305,23 +305,23 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     /**
      * {@inheritDoc}
      */
-    public function setResourceId(?string $resourceId): void
+    public function setResourceIdentifier(?string $resourceIdentifier): void
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setResourceId', [$resourceId]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setResourceIdentifier', [$resourceIdentifier]);
 
-        parent::setResourceId($resourceId);
+        parent::setResourceIdentifier($resourceIdentifier);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getResourceId(): ?string
+    public function getResourceIdentifier(): ?string
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getResourceId', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getResourceIdentifier', []);
 
-        return parent::getResourceId();
+        return parent::getResourceIdentifier();
     }
 
     /**
@@ -344,6 +344,17 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getData', []);
 
         return parent::getData();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getResourceId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getResourceId', []);
+
+        return parent::getResourceId();
     }
 
 }

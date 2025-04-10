@@ -41,7 +41,7 @@ class ActivityLog
                 'ip' => $_SERVER['REMOTE_ADDR'],
                 'event' => $eventEntity->getEvent(),
                 'resource' => $eventEntity->getResource(),
-                'resource_id' => $eventEntity->getResourceId(),
+                'resource_identifier' => $eventEntity->getResourceIdentifier(),
                 'data' => $data ? json_encode($data) : null,
             ]);
         } catch (DbalException $e) {

@@ -87,8 +87,12 @@ class ActivityLogEvent extends AbstractEntity
      *         "default"=null
      *     }
      * )
+     *
+     * Note that we must use "resourceIdentifier" here instead of the preferred
+     * "resourceId" because Laminas ACL identifies resources using the ID
+     * returned from getResourceId().
      */
-    protected $resourceId;
+    protected $resourceIdentifier;
 
     /**
      * @Column(
@@ -156,14 +160,14 @@ class ActivityLogEvent extends AbstractEntity
         return $this->resource;
     }
 
-    public function setResourceId(?string $resourceId): void
+    public function setResourceIdentifier(?string $resourceIdentifier): void
     {
-        $this->resourceId = $resourceId;
+        $this->resourceIdentifier = $resourceIdentifier;
     }
 
-    public function getResourceId(): ?string
+    public function getResourceIdentifier(): ?string
     {
-        return $this->resourceId;
+        return $this->resourceIdentifier;
     }
 
     public function setData(?array $data): void

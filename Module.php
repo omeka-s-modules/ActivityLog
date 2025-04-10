@@ -20,7 +20,7 @@ class Module extends AbstractModule
     public function install(ServiceLocatorInterface $services)
     {
         $sql = <<<'SQL'
-CREATE TABLE activity_log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, created DOUBLE PRECISION NOT NULL, ip VARCHAR(45) DEFAULT NULL, event VARCHAR(255) NOT NULL, resource VARCHAR(255) DEFAULT NULL, resource_id VARCHAR(255) DEFAULT NULL, data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)', INDEX IDX_FCC8C64DA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
+CREATE TABLE activity_log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, created DOUBLE PRECISION NOT NULL, ip VARCHAR(45) DEFAULT NULL, event VARCHAR(255) NOT NULL, resource VARCHAR(255) DEFAULT NULL, resource_identifier VARCHAR(255) DEFAULT NULL, data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)', INDEX IDX_FCC8C64DA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 ALTER TABLE activity_log_event ADD CONSTRAINT FK_FCC8C64DA76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL;
 SQL;
         $conn = $services->get('Omeka\Connection');
@@ -102,7 +102,7 @@ SQL;
                     $eventEntity = new ActivityLogEvent;
                     $eventEntity->setEvent($event->getName());
                     $eventEntity->setResource($request->getResource());
-                    $eventEntity->setResourceId($response->getContent()->getId() ?? $request->getId());
+                    $eventEntity->setResourceIdentifier($response->getContent()->getId() ?? $request->getId());
                     $eventEntity->setData([
                         'request_options' => $request->getOption(),
                         'request_content' => $request->getContent(),
@@ -129,7 +129,7 @@ SQL;
                 $eventEntity = new ActivityLogEvent;
                 $eventEntity->setEvent($event->getName());
                 $eventEntity->setResource($entity::class);
-                $eventEntity->setResourceId($entity->getId());
+                $eventEntity->setResourceIdentifier($entity->getId());
 
                 $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
                 $activityLog->logEvent($eventEntity);

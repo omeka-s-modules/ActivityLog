@@ -69,7 +69,7 @@ class ActivityLogEventAdapter extends AbstractEntityAdapter
         }
         if (isset($query['resource_id']) && '' !== trim($query['resource_id'])) {
             $qb->andWhere($qb->expr()->eq(
-                'omeka_root.resourceId',
+                'omeka_root.resourceIdentifier',
                 $this->createNamedParameter($qb, $query['resource_id'])
             ));
         }
