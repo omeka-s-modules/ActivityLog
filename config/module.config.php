@@ -21,7 +21,9 @@ return [
         ],
     ],
     'service_manager' => [
-        'factories' => [],
+        'factories' => [
+            'ActivityLog\ActivityLog' => Service\ActivityLogFactory::class,
+        ],
     ],
     'api_adapters' => [
         'invokables' => [

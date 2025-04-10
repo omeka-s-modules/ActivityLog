@@ -14,26 +14,25 @@
             <th><?php echo $this->translate('ID'); ?></th>
             <th><?php echo $this->translate('Date'); ?></th>
             <th><?php echo $this->translate('User'); ?></th>
-            <th><?php echo $this->translate('IP address'); ?></th>
-            <th><?php echo $this->translate('Event'); ?></th>
+            <th><?php echo $this->translate('IP'); ?></th>
             <th><?php echo $this->translate('Resource'); ?></th>
-            <th><?php echo $this->translate('Resource ID'); ?></th>
+            <th><?php echo $this->translate('Event'); ?></th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($loggedEvents as $loggedEvent): ?>
         <?php
         $dateTime = new DateTime('@' . $loggedEvent->created());
+        $dateTime->setTimezone(new DateTimeZone($this->setting('time_zone', 'UTC')));
         $user = $loggedEvent->user();
         ?>
         <tr>
             <td><?php echo $loggedEvent->id(); ?></td>
             <td><?php echo $dateTime->format('Y-m-d H:i:s.v'); ?></td>
             <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->displayRole()) : ''; ?></td>
-            <td><?php echo $loggedEvent->ip(); ?></td>
-            <td><?php echo $loggedEvent->event(); ?></td>
+            <td><?php echo $this->hyperlink($loggedEvent->ip(), sprintf('https://whatismyipaddress.com/ip/%s', $loggedEvent->ip()), ['target' => '_blank']); ?></td>
             <td><?php echo $loggedEvent->resource(); ?></td>
-            <td><?php echo $loggedEvent->resourceId(); ?></td>
+            <td><?php echo $loggedEvent->event(); ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

@@ -16,11 +16,11 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
         return [
             'o:user' => $user ? $user->getReference() : null,
             'o:created' => $this->getDateTime($this->created()),
-            'o-module-faceted_browse:ip' => $this->ip(),
-            'o-module-faceted_browse:event' => $this->event(),
-            'o-module-faceted_browse:resource' => $this->resource(),
-            'o-module-faceted_browse:resource_id' => $this->resourceId(),
-            'o-module-faceted_browse:data' => $this->data(),
+            'o-module-activity_log:ip' => $this->ip(),
+            'o-module-activity_log:event' => $this->event(),
+            'o-module-activity_log:resource' => $this->resource(),
+            'o-module-activity_log:resource_id' => $this->resourceId(),
+            'o-module-activity_log:data' => $this->data(),
         ];
     }
 

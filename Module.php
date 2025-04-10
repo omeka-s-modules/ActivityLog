@@ -46,9 +46,11 @@ SQL;
             '*',
             'user.login',
             function (Event $event) {
-                $logEvent = new ActivityLogEvent;
-                $logEvent->setEvent('user.login');
-                $this->logEvent($logEvent);
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent('user.login');
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
             }
         );
 
@@ -63,10 +65,13 @@ SQL;
             '*',
             'user.logout',
             function (Event $event) {
-                $logEvent = new ActivityLogEvent;
-                $logEvent->setEvent('user.logout');
-                $logEvent->setUser($event->getTarget());
-                $this->logEvent($logEvent);
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent('user.logout');
+                $eventEntity->setUser($event->getTarget());
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
+
             }
         );
 
@@ -85,6 +90,7 @@ SQL;
                 function (Event $event) {
                     $request = $event->getParam('request');
                     $response = $event->getParam('response');
+
                     $flushEntityManager = $request->getOption('flushEntityManager', true);
                     if (!$flushEntityManager) {
                         // Assume this operation is a subrequest of a batch
@@ -92,17 +98,18 @@ SQL;
                         // operation can be inferred by the logged batch event.
                         return;
                     }
-                    $entity = $response->getContent();
-                    $data = [
+
+                    $eventEntity = new ActivityLogEvent;
+                    $eventEntity->setEvent($event->getName());
+                    $eventEntity->setResource($request->getResource());
+                    $eventEntity->setResourceId($response->getContent()->getId());
+                    $eventEntity->setData([
                         'request_options' => $request->getOption(),
                         'request_content' => $request->getContent(),
-                    ];
-                    $logEvent = new ActivityLogEvent;
-                    $logEvent->setEvent($event->getName());
-                    $logEvent->setResource($request->getResource());
-                    $logEvent->setResourceId($entity->getId());
-                    $logEvent->setData($data);
-                    $this->logEvent($logEvent);
+                    ]);
+
+                    $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                    $activityLog->logEvent($eventEntity);
                 }
             );
         }
@@ -117,11 +124,14 @@ SQL;
             'entity.persist.post',
             function (Event $event) {
                 $entity = $event->getTarget();
-                $logEvent = new ActivityLogEvent;
-                $logEvent->setEvent($event->getName());
-                $logEvent->setResource($entity::class);
-                $logEvent->setResourceId($entity->getId());
-                $this->logEvent($logEvent);
+
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent($event->getName());
+                $eventEntity->setResource($entity::class);
+                $eventEntity->setResourceId($entity->getId());
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
             }
         );
         /**
@@ -139,56 +149,20 @@ SQL;
                 function (Event $event) {
                     $adapter = $event->getTarget();
                     $request = $event->getParam('request');
-                    $data = [
+
+                    $eventEntity = new ActivityLogEvent;
+                    $eventEntity->setEvent($event->getName());
+                    $eventEntity->setResource($request->getResource());
+                    $eventEntity->setData([
                         'request_options' => $request->getOption(),
-                        'request_ids' => $request->getIds(),
                         'request_content' => $adapter->preprocessBatchUpdate([], $request),
-                    ];
-                    $logEvent = new ActivityLogEvent;
-                    $logEvent->setEvent($event->getName());
-                    $logEvent->setResource($request->getResource());
-                    $logEvent->setData($data);
-                    $this->logEvent($logEvent);
+                        'request_ids' => $request->getIds(),
+                    ]);
+
+                    $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                    $activityLog->logEvent($eventEntity);
                 }
             );
-        }
-    }
-
-    /**
-     * Log an event.
-     *
-     * Note that, to optimize the INSERT query, we use the connection instead of
-     * the entity manager to persist the event. We only use the ActivityLogEvent
-     * entity to efficiently pass data into this method.
-     */
-    public function logEvent(ActivityLogEvent $logEvent) {
-        $services = $this->getServiceLocator();
-
-        // If no user ID is passed, set the ID of the logged in user.
-        if (!$logEvent->getUser()) {
-            $user = $services->get('Omeka\AuthenticationService')->getIdentity();
-            if ($user) {
-                $logEvent->setUser($user);
-            }
-        }
-
-        // Log the event.
-        $conn = $services->get('Omeka\Connection');
-        try {
-            $user = $logEvent->getUser();
-            $data = $logEvent->getData();
-            $conn->insert('activity_log_event', [
-                'created' => microtime(true),
-                'user_id' => $user ? $user->getId() : null,
-                'ip' => $_SERVER['REMOTE_ADDR'],
-                'event' => $logEvent->getEvent(),
-                'resource' => $logEvent->getResource(),
-                'resource_id' => $logEvent->getResourceId(),
-                'data' => $data ? json_encode($data) : null,
-            ]);
-        } catch (DbalException $e) {
-            // Catch DBAL exceptions and log them instead of breaking the page.
-            $services->get('Omeka\Logger')->warn(sprintf('ActivityLog exception: %s', $e->getMessage()));
         }
     }
 }
