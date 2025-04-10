@@ -102,7 +102,7 @@ SQL;
                     $eventEntity = new ActivityLogEvent;
                     $eventEntity->setEvent($event->getName());
                     $eventEntity->setResource($request->getResource());
-                    $eventEntity->setResourceId($response->getContent()->getId());
+                    $eventEntity->setResourceId($response->getContent()->getId() ?? $request->getId());
                     $eventEntity->setData([
                         'request_options' => $request->getOption(),
                         'request_content' => $request->getContent(),
@@ -113,6 +113,7 @@ SQL;
                 }
             );
         }
+
         /**
          * Log media creation.
          *
@@ -134,6 +135,7 @@ SQL;
                 $activityLog->logEvent($eventEntity);
             }
         );
+
         /**
          * Log API adapter batch events.
          */
@@ -163,6 +165,46 @@ SQL;
                     $activityLog->logEvent($eventEntity);
                 }
             );
+        }
+
+        /**
+         * Add live event messages to API adapter event logs.
+         */
+        $eventIds = [
+            'api.create.post',
+            'api.update.post',
+            'api.delete.post',
+        ];
+        foreach ($eventIds as $eventId) {
+            $sharedEventManager->attach(
+                $eventId,
+                'activity_log.event_messages',
+                function (Event $event) {
+                    $view = $event->getTarget();
+                    $loggedEvent = $event->getParam('loggedEvent');
+                    $messages = $event->getParam('messages');
+
+                    if ('api.create.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Created a "%s" resource'), $loggedEvent->resource());
+                    } elseif ('api.update.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Updated a "%s" resource'), $loggedEvent->resource());
+                    } elseif ('api.delete.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Deleted a "%s" resource'), $loggedEvent->resource());
+                    }
+
+                    $messages[] = sprintf('%s: %s', $view->translate('ID'), $loggedEvent->resourceId());
+
+                    $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
+                    if ($resource) {
+                        $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resource->url()), $view->translate('View resource'));
+                    } else {
+                        $messages[] = sprintf('[%s]', $view->translate('Resource not found'));
+                    }
+
+                    $event->setParam('messages', $messages);
+                }
+            );
+
         }
     }
 }
