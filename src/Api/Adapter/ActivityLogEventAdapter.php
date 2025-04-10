@@ -2,6 +2,7 @@
 namespace ActivityLog\Api\Adapter;
 
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\QueryBuilder;
 use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Request;
@@ -73,18 +74,18 @@ class ActivityLogEventAdapter extends AbstractEntityAdapter
                 $this->createNamedParameter($qb, $query['resource_id'])
             ));
         }
-        if (isset($query['from']) && preg_match('/\d{4}-\d{2}-\d{2}/', $query['from'])) {
+        if (isset($query['from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $query['from'])) {
             $settings = $this->getServiceLocator()->get('Omeka\Settings');
-            $dateTime = new \DateTime($query['from'], new \DateTimeZone($settings->get('time_zone', 'UTC')));
+            $dateTime = new DateTime($query['from'], new DateTimeZone($settings->get('time_zone', 'UTC')));
             $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->gte(
                 'omeka_root.created',
                 $this->createNamedParameter($qb, $timestamp)
             ));
         }
-        if (isset($query['to']) && preg_match('/\d{4}-\d{2}-\d{2}/', $query['to'])) {
+        if (isset($query['before']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $query['before'])) {
             $settings = $this->getServiceLocator()->get('Omeka\Settings');
-            $dateTime = new \DateTime($query['to'], new \DateTimeZone($settings->get('time_zone', 'UTC')));
+            $dateTime = new DateTime($query['before'], new DateTimeZone($settings->get('time_zone', 'UTC')));
             $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->lt(
                 'omeka_root.created',

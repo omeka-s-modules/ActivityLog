@@ -21,7 +21,7 @@ class EventFilterForm extends Form
         ]);
         $this->add([
             'type' => LaminasElement\Select::class,
-            'name' => 'user',
+            'name' => 'user_id',
             'options' => [
                 'empty_option' => 'Select a user', // @translate
                 'value_options' => $this->getUserValueOptions(),
@@ -74,9 +74,9 @@ class EventFilterForm extends Form
         ]);
         $this->add([
             'type' => LaminasElement\Text::class,
-            'name' => 'to',
+            'name' => 'before',
             'attributes' => [
-                'placeholder' => 'Earlier than: yyyy-mm-dd', // @translate
+                'placeholder' => 'Before: yyyy-mm-dd', // @translate
             ],
         ]);
     }
