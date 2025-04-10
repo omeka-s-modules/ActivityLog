@@ -36,6 +36,11 @@ return [
             'ActivityLog\Controller\Admin\Event' => Controller\Admin\EventController::class,
         ],
     ],
+    'form_elements' => [
+        'factories' => [
+            'ActivityLog\Form\EventFilterForm' => Service\Form\EventFilterFormFactory::class,
+        ],
+    ],
     'controller_plugins' => [
         'factories' => [],
     ],

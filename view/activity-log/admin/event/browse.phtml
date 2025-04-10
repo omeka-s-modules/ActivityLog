@@ -6,6 +6,22 @@
     <?php echo $this->pagination(); ?>
 </div>
 
+<div class="filter-controls">
+    <?php echo $this->form()->openTag($eventFilterForm); ?>
+    <?php echo $this->formElement($eventFilterForm->get('id')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('user')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('user_role')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('ip')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('event')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('resource')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('resource_id')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('from')); ?>
+    <?php echo $this->formElement($eventFilterForm->get('to')); ?>
+    <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
+    <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
+    <?php echo $this->form()->closeTag(); ?>
+</div>
+
 <?php if ($loggedEvents): ?>
 
 <table class="tablesaw" data-tablesaw-mode="stack">
@@ -36,7 +52,7 @@
         <tr>
             <td><?php echo $loggedEvent->id(); ?></td>
             <td><?php echo $dateTime->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
-            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->displayRole()) : ''; ?></td>
+            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
             <td><?php echo $this->hyperlink($loggedEvent->ip(), sprintf('https://whatismyipaddress.com/ip/%s', $loggedEvent->ip()), ['target' => '_blank']); ?></td>
             <td><?php echo $loggedEvent->event(); ?></td>
             <td><?php echo $loggedEvent->resource(); ?></td>

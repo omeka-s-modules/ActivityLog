@@ -1,6 +1,7 @@
 <?php
 namespace ActivityLog\Controller\Admin;
 
+use ActivityLog\Form\EventFilterForm;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
@@ -13,20 +14,23 @@ class EventController extends AbstractActionController
 
     public function browseAction()
     {
-        $perPage = 100;
+        $eventFilterForm = $this->getForm(EventFilterForm::class);
+        $eventFilterForm->setData($this->params()->fromQuery());
+
         $this->setBrowseDefaults('created');
         $query = $this->params()->fromQuery();
-        $query['per_page'] = $perPage;
+        $query['per_page'] = 100;
         $response = $this->api()->search('activity_log_event', $query);
         $this->paginator(
             $response->getTotalResults(),
             $this->params()->fromQuery('page'),
-            $perPage
+            $query['per_page']
         );
         $loggedEvents = $response->getContent();
 
         $view = new ViewModel;
         $view->setVariable('loggedEvents', $loggedEvents);
+        $view->setVariable('eventFilterForm', $eventFilterForm);
         return $view;
     }
 }
