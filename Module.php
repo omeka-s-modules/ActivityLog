@@ -168,7 +168,35 @@ SQL;
         }
 
         /**
-         * Add live event messages to API adapter event logs.
+         * Add messages to user login event logs.
+         */
+        $sharedEventManager->attach(
+            'user.login',
+            'activity_log.event_messages',
+            function (Event $event) {
+                $view = $this->getServiceLocator()->get('ViewRenderer');
+                $messages = $event->getParam('messages');
+                $messages[] = $view->translate('Logged in');
+                $event->setParam('messages', $messages);
+            }
+        );
+
+        /**
+         * Add messages to user logout event logs.
+         */
+        $sharedEventManager->attach(
+            'user.logout',
+            'activity_log.event_messages',
+            function (Event $event) {
+                $view = $this->getServiceLocator()->get('ViewRenderer');
+                $messages = $event->getParam('messages');
+                $messages[] = $view->translate('Logged out');
+                $event->setParam('messages', $messages);
+            }
+        );
+
+        /**
+         * Add messages to API adapter event logs.
          */
         $eventIds = [
             'api.create.post',
@@ -183,7 +211,6 @@ SQL;
                     $view = $event->getTarget();
                     $loggedEvent = $event->getParam('loggedEvent');
                     $messages = $event->getParam('messages');
-
                     if ('api.create.post' === $loggedEvent->event()) {
                         $messages[] = sprintf($view->translate('Created a "%s" resource'), $loggedEvent->resource());
                     } elseif ('api.update.post' === $loggedEvent->event()) {
@@ -191,20 +218,84 @@ SQL;
                     } elseif ('api.delete.post' === $loggedEvent->event()) {
                         $messages[] = sprintf($view->translate('Deleted a "%s" resource'), $loggedEvent->resource());
                     }
-
-                    $messages[] = sprintf('%s: %s', $view->translate('ID'), $loggedEvent->resourceId());
-
+                    $messages[] = $view->translate('Source: API');
+                    $messages[] = sprintf($view->translate('ID: %s'), $loggedEvent->resourceId());
                     $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
                     if ($resource) {
                         $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resource->url()), $view->translate('View resource'));
                     } else {
                         $messages[] = sprintf('[%s]', $view->translate('Resource not found'));
                     }
-
                     $event->setParam('messages', $messages);
                 }
             );
+        }
 
+        /**
+         * Add messages to Doctrine lifecycle event logs.
+         */
+        $eventIds = [
+            'entity.persist.post',
+            'entity.update.post',
+            'entity.remove.post',
+        ];
+        foreach ($eventIds as $eventId) {
+            $sharedEventManager->attach(
+                $eventId,
+                'activity_log.event_messages',
+                function (Event $event) {
+                    $view = $this->getServiceLocator()->get('ViewRenderer');
+                    $loggedEvent = $event->getParam('loggedEvent');
+                    $messages = $event->getParam('messages');
+                    if ('entity.persist.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Persisted a "%s" entity'), $loggedEvent->resource());
+                    } elseif ('entity.update.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Updated a "%s" entity'), $loggedEvent->resource());
+                    } elseif ('entity.remove.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Removed a "%s" entity'), $loggedEvent->resource());
+                    }
+                    $messages[] = $view->translate('Source: Doctrine');
+                    // Add message for media entities.
+                    if ('Omeka\Entity\Media' === $loggedEvent->resource()) {
+                        $resource = $view->api()->searchOne('media', ['id' => $loggedEvent->resourceId()])->getContent();
+                        if ($resource) {
+                            $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resource->url()), $view->translate('View resource'));
+                        } else {
+                            $messages[] = sprintf('[%s]', $view->translate('Resource not found'));
+                        }
+                    }
+                    $event->setParam('messages', $messages);
+                }
+            );
+        }
+
+        /**
+         * Add messages to API adapter batch event logs.
+         */
+        $eventIds = [
+            'api.batch_create.post',
+            'api.batch_update.post',
+            'api.batch_delete.post',
+        ];
+        foreach ($eventIds as $eventId) {
+            $sharedEventManager->attach(
+                $eventId,
+                'activity_log.event_messages',
+                function (Event $event) {
+                    $view = $this->getServiceLocator()->get('ViewRenderer');
+                    $loggedEvent = $event->getParam('loggedEvent');
+                    $messages = $event->getParam('messages');
+                    if ('api.batch_create.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Batch created "%s" resources'), $loggedEvent->resource());
+                    } elseif ('api.batch_update.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Batch updated "%s" resources'), $loggedEvent->resource());
+                    } elseif ('api.batch_delete.post' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Batch deleted "%s" resources'), $loggedEvent->resource());
+                    }
+                    $messages[] = $view->translate('Source: API');
+                    $event->setParam('messages', $messages);
+                }
+            );
         }
     }
 }
