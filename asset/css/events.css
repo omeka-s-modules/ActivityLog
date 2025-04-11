@@ -1,15 +1,10 @@
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
-tr:nth-child(odd) {
-    background-color: #ffffff;
-}
-tr > th:first-child {
-    width: 8% !important;
-}
 tr > th:last-child {
-    width: 24% !important;
+    width: 30% !important;
 }
 tr > td {
     font-size: 14px;
+    overflow-wrap: anywhere;
 }
