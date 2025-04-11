@@ -134,6 +134,79 @@ SQL;
         );
 
         /*
+         * Log user update.
+         *
+         * Note that api.update.post contains limited data about a media update.
+         * This way we can log password changes, and any other changes that
+         * occur.
+         */
+        $sharedEventManager->attach(
+            'Omeka\Entity\User',
+            'entity.update.post',
+            function (Event $event) {
+                $entity = $event->getTarget();
+                $args = $event->getParam('LifecycleEventArgs');
+
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent($event->getName());
+                $eventEntity->setResource($entity::class);
+                $eventEntity->setResourceIdentifier($entity->getId());
+                $eventEntity->setData([
+                    'entity_changeset' => $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity),
+                ]);
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
+            }
+        );
+
+        /*
+         * Log API key creation.
+         *
+         * Note that API key creation is done entirely within the entity
+         * manager.
+         */
+        $sharedEventManager->attach(
+            'Omeka\Entity\ApiKey',
+            'entity.persist.post',
+            function (Event $event) {
+                $entity = $event->getTarget();
+                $args = $event->getParam('LifecycleEventArgs');
+
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent($event->getName());
+                $eventEntity->setResource($entity::class);
+                $eventEntity->setResourceIdentifier($entity->getId());
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
+            }
+        );
+
+        /*
+         * Log API key deletion.
+         *
+         * Note that API key deletion is done entirely within the entity
+         * manager.
+         */
+        $sharedEventManager->attach(
+            'Omeka\Entity\ApiKey',
+            'entity.remove.post',
+            function (Event $event) {
+                $entity = $event->getTarget();
+                $args = $event->getParam('LifecycleEventArgs');
+
+                $eventEntity = new ActivityLogEvent;
+                $eventEntity->setEvent($event->getName());
+                $eventEntity->setResource($entity::class);
+                $eventEntity->setResourceIdentifier($entity->getId());
+
+                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                $activityLog->logEvent($eventEntity);
+            }
+        );
+
+        /*
          * Log API adapter batch events.
          */
         $eventNames = [
