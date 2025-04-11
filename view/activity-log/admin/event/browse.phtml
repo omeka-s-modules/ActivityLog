@@ -36,38 +36,22 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
             <th><?php echo $this->translate('IP'); ?></th>
             <th><?php echo $this->translate('Event'); ?></th>
             <th><?php echo $this->translate('Resource'); ?></th>
-            <th><?php echo $this->translate('Message'); ?></th>
+            <th><?php echo $this->translate('Messages'); ?></th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($loggedEvents as $loggedEvent): ?>
-        <?php
-        $dateTime = new DateTime('@' . $loggedEvent->timestamp());
-        $dateTime->setTimezone(new DateTimeZone($this->setting('time_zone', 'UTC')));
-        $user = $loggedEvent->user();
-        $eventParams = $this->trigger(
-            'activity_log.event_messages',
-            ['loggedEvent' => $loggedEvent, 'messages' => []],
-            true,
-            [$loggedEvent->event()]
-        );
-        $messages = $eventParams['messages'];
-        $messages[] = $this->hyperlink($this->translate('View event details'), '#', [
-            'data-sidebar-selector' => '#show-details',
-            'data-sidebar-content-url' => $this->url('admin/activity-log/id', ['action' => 'show-details', 'id' => $loggedEvent->id()], true),
-            'class' => 'sidebar-content',
-        ]);
-        ?>
+        <?php $user = $loggedEvent->user(); ?>
         <tr>
             <td><?php echo $loggedEvent->id(); ?></td>
-            <td><?php echo $dateTime->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
+            <td><?php echo $loggedEvent->dateTime()->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
             <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
             <td><?php echo $loggedEvent->ip(); ?></td>
             <td><?php echo $loggedEvent->event(); ?></td>
             <td><?php echo $loggedEvent->resource(); ?></td>
             <td>
                 <ul>
-                    <?php foreach ($messages as $message): ?>
+                    <?php foreach ($loggedEvent->messages($this) as $message): ?>
                     <li><?php echo $message; ?></li>
                     <?php endforeach; ?>
                 </ul>
@@ -81,7 +65,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
     <?php echo $this->pagination(); ?>
 </div>
 
-<div id="show-details" class="sidebar">
+<div id="sidebar" class="sidebar">
     <?php echo $this->hyperlink('', '#', [
         'class' => 'sidebar-close o-icon-close',
         'title' => $this->translate('Close'),

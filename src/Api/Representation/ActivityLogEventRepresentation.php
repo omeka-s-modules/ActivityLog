@@ -1,6 +1,9 @@
 <?php
 namespace ActivityLog\Api\Representation;
 
+use DateTime;
+use DateTimeZone;
+use Laminas\View\Renderer\PhpRenderer;
 use Omeka\Api\Representation\AbstractEntityRepresentation;
 
 class ActivityLogEventRepresentation extends AbstractEntityRepresentation
@@ -48,6 +51,14 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
         return $this->resource->getTimestamp();
     }
 
+    public function dateTime()
+    {
+        $settings = $this->getServiceLocator()->get('Omeka\Settings');
+        $dateTime = new DateTime('@' . $this->timestamp());
+        $dateTime->setTimezone(new DateTimeZone($settings->get('time_zone', 'UTC')));
+        return $dateTime;
+    }
+
     public function ip()
     {
         return $this->resource->getIp();
@@ -71,5 +82,22 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
     public function data()
     {
         return $this->resource->getData();
+    }
+
+    public function messages(PhpRenderer $view)
+    {
+        $eventParams = $view->trigger(
+            'activity_log.event_messages',
+            ['loggedEvent' => $this, 'messages' => []],
+            true,
+            [$this->event()]
+        );
+        $messages = $eventParams['messages'];
+        $messages[] = $view->hyperlink($view->translate('View event data'), '#', [
+            'data-sidebar-selector' => '#sidebar',
+            'data-sidebar-content-url' => $view->url('admin/activity-log/id', ['action' => 'show-data', 'id' => $this->id()], true),
+            'class' => 'sidebar-content',
+        ]);
+        return $messages;
     }
 }

@@ -7,7 +7,6 @@ use Doctrine\ORM\QueryBuilder;
 use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
-use Omeka\Entity\Site;
 use Omeka\Stdlib\ErrorStore;
 
 class ActivityLogEventAdapter extends AbstractEntityAdapter
@@ -77,19 +76,17 @@ class ActivityLogEventAdapter extends AbstractEntityAdapter
         if (isset($query['from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $query['from'])) {
             $settings = $this->getServiceLocator()->get('Omeka\Settings');
             $dateTime = new DateTime($query['from'], new DateTimeZone($settings->get('time_zone', 'UTC')));
-            $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->gte(
                 'omeka_root.timestamp',
-                $this->createNamedParameter($qb, $timestamp)
+                $this->createNamedParameter($qb, $dateTime->getTimestamp())
             ));
         }
         if (isset($query['before']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $query['before'])) {
             $settings = $this->getServiceLocator()->get('Omeka\Settings');
             $dateTime = new DateTime($query['before'], new DateTimeZone($settings->get('time_zone', 'UTC')));
-            $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->lt(
                 'omeka_root.timestamp',
-                $this->createNamedParameter($qb, $timestamp)
+                $this->createNamedParameter($qb, $dateTime->getTimestamp())
             ));
         }
     }

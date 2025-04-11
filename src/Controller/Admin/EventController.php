@@ -34,7 +34,7 @@ class EventController extends AbstractActionController
         return $view;
     }
 
-    public function showDetailsAction()
+    public function showDataAction()
     {
         $loggedEvent = $this->api()->read('activity_log_event', $this->params('id'))->getContent();
 

@@ -1,8 +1,0 @@
-<h3><?php echo $this->translate('Event details'); ?></h3>
-
-<div class="meta-group">
-    <h4><?php echo $this->translate('ID'); ?></h4>
-    <div class="value"><?php echo $loggedEvent->id(); ?></div>
-</div>
-
-<pre style="font-size: 12px;"><?php echo json_encode($loggedEvent->data(), JSON_PRETTY_PRINT); ?></pre>

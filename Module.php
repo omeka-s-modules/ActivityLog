@@ -2,13 +2,10 @@
 namespace ActivityLog;
 
 use ActivityLog\Entity\ActivityLogEvent;
-use DateTime;
-use Doctrine\DBAL\Exception as DbalException;
 use Omeka\Module\AbstractModule;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Session\Container;
 
 class Module extends AbstractModule
 {
@@ -39,7 +36,7 @@ SQL;
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
-        /**
+        /*
          * Log login events.
          */
         $sharedEventManager->attach(
@@ -54,7 +51,7 @@ SQL;
             }
         );
 
-        /**
+        /*
          * Log logout events.
          *
          * Note that pre-4.2.0 versions of Omeka S did not pass the user entity
@@ -114,7 +111,7 @@ SQL;
             );
         }
 
-        /**
+        /*
          * Log media creation.
          *
          * Note that api.create.post does not trigger during media creation
@@ -136,7 +133,7 @@ SQL;
             }
         );
 
-        /**
+        /*
          * Log API adapter batch events.
          */
         $eventNames = [
@@ -167,7 +164,7 @@ SQL;
             );
         }
 
-        /**
+        /*
          * Add messages to user login event logs.
          */
         $sharedEventManager->attach(
@@ -181,7 +178,7 @@ SQL;
             }
         );
 
-        /**
+        /*
          * Add messages to user logout event logs.
          */
         $sharedEventManager->attach(
@@ -195,7 +192,7 @@ SQL;
             }
         );
 
-        /**
+        /*
          * Add messages to API adapter event logs.
          */
         $eventIds = [
@@ -231,7 +228,7 @@ SQL;
             );
         }
 
-        /**
+        /*
          * Add messages to Doctrine lifecycle event logs.
          */
         $eventIds = [
@@ -270,7 +267,7 @@ SQL;
             );
         }
 
-        /**
+        /*
          * Add messages to API adapter batch event logs.
          */
         $eventIds = [

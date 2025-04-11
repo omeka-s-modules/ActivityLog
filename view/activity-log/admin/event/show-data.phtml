@@ -1,0 +1,8 @@
+<h3><?php echo $this->translate(sprintf('Event #%s', $loggedEvent->id())); ?></h3>
+
+<div class="meta-group">
+    <h4><?php echo $this->translate('Data'); ?></h4>
+    <div class="value">
+        <pre style="font-size: 12px;"><?php echo json_encode($loggedEvent->data(), JSON_PRETTY_PRINT); ?></pre>
+    </div>
+</div>

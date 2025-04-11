@@ -1,12 +1,7 @@
 <?php
 namespace ActivityLog\Entity;
 
-use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Omeka\Entity\AbstractEntity;
-use Omeka\Entity\Site;
 use Omeka\Entity\User;
 
 /**
