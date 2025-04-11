@@ -36,7 +36,7 @@ class ActivityLog
             $user = $eventEntity->getUser();
             $data = $eventEntity->getData();
             $conn->insert('activity_log_event', [
-                'created' => microtime(true),
+                'timestamp' => microtime(true),
                 'user_id' => $user ? $user->getId() : null,
                 'ip' => $_SERVER['REMOTE_ADDR'],
                 'event' => $eventEntity->getEvent(),

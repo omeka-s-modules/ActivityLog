@@ -17,7 +17,7 @@ class EventController extends AbstractActionController
         $eventFilterForm = $this->getForm(EventFilterForm::class);
         $eventFilterForm->setData($this->params()->fromQuery());
 
-        $this->setBrowseDefaults('created');
+        $this->setBrowseDefaults('id');
         $query = $this->params()->fromQuery();
         $query['per_page'] = 25;
         $response = $this->api()->search('activity_log_event', $query);

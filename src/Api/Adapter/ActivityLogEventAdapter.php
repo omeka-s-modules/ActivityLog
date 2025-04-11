@@ -79,7 +79,7 @@ class ActivityLogEventAdapter extends AbstractEntityAdapter
             $dateTime = new DateTime($query['from'], new DateTimeZone($settings->get('time_zone', 'UTC')));
             $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->gte(
-                'omeka_root.created',
+                'omeka_root.timestamp',
                 $this->createNamedParameter($qb, $timestamp)
             ));
         }
@@ -88,7 +88,7 @@ class ActivityLogEventAdapter extends AbstractEntityAdapter
             $dateTime = new DateTime($query['before'], new DateTimeZone($settings->get('time_zone', 'UTC')));
             $timestamp = $dateTime->getTimestamp();
             $qb->andWhere($qb->expr()->lt(
-                'omeka_root.created',
+                'omeka_root.timestamp',
                 $this->createNamedParameter($qb, $timestamp)
             ));
         }

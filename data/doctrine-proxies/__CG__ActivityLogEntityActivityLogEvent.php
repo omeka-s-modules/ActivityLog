@@ -67,10 +67,10 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
+            return ['__isInitialized__', 'id', 'timestamp', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
         }
 
-        return ['__isInitialized__', 'id', 'created', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
+        return ['__isInitialized__', 'id', 'timestamp', 'user', 'ip', 'event', 'resource', 'resourceIdentifier', 'data'];
     }
 
     /**
@@ -195,23 +195,23 @@ class ActivityLogEvent extends \ActivityLog\Entity\ActivityLogEvent implements \
     /**
      * {@inheritDoc}
      */
-    public function setCreated(float $created): void
+    public function setTimestamp(float $timestamp): void
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTimestamp', [$timestamp]);
 
-        parent::setCreated($created);
+        parent::setTimestamp($timestamp);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCreated(): float
+    public function getTimestamp(): float
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreated', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTimestamp', []);
 
-        return parent::getCreated();
+        return parent::getTimestamp();
     }
 
     /**

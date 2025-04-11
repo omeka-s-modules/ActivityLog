@@ -32,7 +32,7 @@ class ActivityLogEvent extends AbstractEntity
      *     nullable=false
      * )
      */
-    protected $created;
+    protected $timestamp;
 
     /**
      * @ManyToOne(
@@ -110,14 +110,14 @@ class ActivityLogEvent extends AbstractEntity
         return $this->id;
     }
 
-    public function setCreated(float $created): void
+    public function setTimestamp(float $timestamp): void
     {
-        $this->created = $created;
+        $this->timestamp = $timestamp;
     }
 
-    public function getCreated(): float
+    public function getTimestamp(): float
     {
-        return $this->created;
+        return $this->timestamp;
     }
 
     public function setUser(?User $user): void

@@ -42,7 +42,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
     <tbody>
         <?php foreach ($loggedEvents as $loggedEvent): ?>
         <?php
-        $dateTime = new DateTime('@' . $loggedEvent->created());
+        $dateTime = new DateTime('@' . $loggedEvent->timestamp());
         $dateTime->setTimezone(new DateTimeZone($this->setting('time_zone', 'UTC')));
         $user = $loggedEvent->user();
         $eventParams = $this->trigger(
@@ -51,6 +51,12 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
             true,
             [$loggedEvent->event()]
         );
+        $messages = $eventParams['messages'];
+        $messages[] = $this->hyperlink($this->translate('View event details'), '#', [
+            'data-sidebar-selector' => '#show-details',
+            'data-sidebar-content-url' => $this->url('admin/activity-log/id', ['action' => 'show-details', 'id' => $loggedEvent->id()], true),
+            'class' => 'sidebar-content',
+        ]);
         ?>
         <tr>
             <td><?php echo $loggedEvent->id(); ?></td>
@@ -60,14 +66,11 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
             <td><?php echo $loggedEvent->event(); ?></td>
             <td><?php echo $loggedEvent->resource(); ?></td>
             <td>
-                <?php echo implode('<br>', $eventParams['messages']); ?>
-                <?php if ($loggedEvent->data()): ?>
-                <div><?php echo $this->hyperlink($this->translate('View event data'), '#', [
-                    'data-sidebar-selector' => '#show-details',
-                    'data-sidebar-content-url' => $this->url('admin/activity-log/id', ['action' => 'show-details', 'id' => $loggedEvent->id()], true),
-                    'class' => 'sidebar-content',
-                ]); ?></div>
-                <?php endif; ?>
+                <ul>
+                    <?php foreach ($messages as $message): ?>
+                    <li><?php echo $message; ?></li>
+                    <?php endforeach; ?>
+                </ul>
             </td>
         </tr>
         <?php endforeach; ?>
