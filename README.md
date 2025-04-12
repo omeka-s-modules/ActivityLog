@@ -8,30 +8,30 @@ The "Events" page lists events, most recent first. It only lists events that mod
 resources in some way (create, update, and delete). It does not include read-only
 events (read and search). The table includes the following columns:
 
-- ID: The ID of the event
-- Date: The date/time of the event, using the installation's time zone
-- User: The user who triggered the event, and the user's role
-- IP: The IP address of the user, at the time of the event
-- Event: The name of the event that was triggered by the user
-- Resource: The name of the resource that was modified by the user
-- Messages: Any messages that describe the event, in list form
+- **ID**: The ID of the event
+- **Date**: The date/time of the event, using the installation's time zone
+- **User**: The user who triggered the event, and the user's role
+- **IP**: The IP address of the user, at the time of the event
+- **Event**: The name of the event that was triggered by the user
+- **Resource**: The name of the resource that was modified by the user
+- **Messages**: Any messages that describe the event, in list form
 
 Users may filter the events using the multiple available filters:
 
-- ID: Filter events by event ID
-- User: Filter events by user name (count in parenthesis)
-- User role: Filter events by user role (count in parenthesis)
-- IP: Filter events by IP address
-- Event: Filter events by event name (count in parenthesis)
-- Resource: Filter events by resource name (count in parenthesis)
-- Resource ID: Filter events by resource ID
-- From: Filter events by date from (on and after)
-- Before: Filter events by date before
+- **ID**: Filter events by event ID
+- **User**: Filter events by user name (count in parenthesis)
+- **User role**: Filter events by user role (count in parenthesis)
+- **IP**: Filter events by IP address
+- **Event**: Filter events by event name (count in parenthesis)
+- **Resource**: Filter events by resource name (count in parenthesis)
+- **Resource ID**: Filter events by resource ID
+- **From**: Filter events by date from (on and after)
+- **Before**: Filter events by date before
 
 Set the filters and click "Apply filters." The resulting page will show the filtered
 results. Click "Clear filters" to clear the filters and return to the default page.
 
-### Events listened to
+## Events listened to
 
 By default, the module will listen to the following events. Modules may add more
 events, but are not listed here.
