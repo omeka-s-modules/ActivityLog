@@ -68,7 +68,6 @@ SQL;
 
                 $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
                 $activityLog->logEvent($eventEntity);
-
             }
         );
 
@@ -161,50 +160,65 @@ SQL;
         );
 
         /*
-         * Log API key creation.
+         * Log API key operations.
          *
-         * Note that API key creation is done entirely within the entity
+         * Note that API key operations are done entirely within the entity
          * manager.
          */
-        $sharedEventManager->attach(
-            'Omeka\Entity\ApiKey',
+        $eventNames = [
             'entity.persist.post',
-            function (Event $event) {
-                $entity = $event->getTarget();
-                $args = $event->getParam('LifecycleEventArgs');
-
-                $eventEntity = new ActivityLogEvent;
-                $eventEntity->setEvent($event->getName());
-                $eventEntity->setResource($entity::class);
-                $eventEntity->setResourceIdentifier($entity->getId());
-
-                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
-                $activityLog->logEvent($eventEntity);
-            }
-        );
-
-        /*
-         * Log API key deletion.
-         *
-         * Note that API key deletion is done entirely within the entity
-         * manager.
-         */
-        $sharedEventManager->attach(
-            'Omeka\Entity\ApiKey',
             'entity.remove.post',
-            function (Event $event) {
-                $entity = $event->getTarget();
-                $args = $event->getParam('LifecycleEventArgs');
+        ];
+        foreach ($eventNames as $eventName) {
+            $sharedEventManager->attach(
+                'Omeka\Entity\ApiKey',
+                $eventName,
+                function (Event $event) {
+                    $entity = $event->getTarget();
+                    $args = $event->getParam('LifecycleEventArgs');
 
-                $eventEntity = new ActivityLogEvent;
-                $eventEntity->setEvent($event->getName());
-                $eventEntity->setResource($entity::class);
-                $eventEntity->setResourceIdentifier($entity->getId());
+                    $eventEntity = new ActivityLogEvent;
+                    $eventEntity->setEvent($event->getName());
+                    $eventEntity->setResource($entity::class);
+                    $eventEntity->setResourceIdentifier($entity->getId());
 
-                $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
-                $activityLog->logEvent($eventEntity);
-            }
-        );
+                    $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                    $activityLog->logEvent($eventEntity);
+                }
+            );
+        }
+
+        $eventNames = [
+            'entity.persist.post',
+            'entity.update.post',
+            'entity.remove.post',
+        ];
+        foreach ($eventNames as $eventName) {
+            $sharedEventManager->attach(
+                'Omeka\Entity\Module',
+                $eventName,
+                function (Event $event) {
+                    $entity = $event->getTarget();
+                    $args = $event->getParam('LifecycleEventArgs');
+
+                    // Do not attempt to log after ActivityLog is uninstalled.
+                    if ('entity.remove.post' === $event->getName() && 'ActivityLog' === $entity->getId()) {
+                        return;
+                    }
+
+                    $eventEntity = new ActivityLogEvent;
+                    $eventEntity->setEvent($event->getName());
+                    $eventEntity->setResource($entity::class);
+                    $eventEntity->setResourceIdentifier($entity->getId());
+                    $eventEntity->setData([
+                        'entity_changeset' => $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity),
+                    ]);
+
+                    $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                    $activityLog->logEvent($eventEntity);
+                }
+            );
+        }
 
         /*
          * Log API adapter batch events.
