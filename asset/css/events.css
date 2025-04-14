@@ -2,9 +2,18 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 tr > th:last-child {
-    width: 30% !important;
+    width: 30%;
 }
 tr > td {
     font-size: 14px;
     overflow-wrap: anywhere;
+}
+.filter-column-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.filter-column-wrapper input, .filter-column-wrapper select {
+    display: block;
+    margin-bottom: 4px;
+    width: 90%;
 }

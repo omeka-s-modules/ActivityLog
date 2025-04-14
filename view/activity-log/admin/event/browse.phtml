@@ -11,17 +11,27 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 
 <div class="filter-controls">
     <?php echo $this->form()->openTag($eventFilterForm); ?>
-    <?php echo $this->formElement($eventFilterForm->get('id')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('user_id')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('user_role')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('ip')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('event')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('resource')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('resource_id')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('from')); ?>
-    <?php echo $this->formElement($eventFilterForm->get('before')); ?>
-    <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
-    <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
+    <div class="filter-column-wrapper">
+        <div class="filter-column">
+            <?php echo $this->formElement($eventFilterForm->get('id')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('event')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('resource')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('resource_id')); ?>
+        </div>
+        <div class="filter-column">
+            <?php echo $this->formElement($eventFilterForm->get('user_id')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('user_role')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('ip')); ?>
+        </div>
+        <div class="filter-column">
+            <?php echo $this->formElement($eventFilterForm->get('from')); ?>
+            <?php echo $this->formElement($eventFilterForm->get('before')); ?>
+            <div class="filter-buttons">
+                <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
+                <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
+            </div>
+        </div>
+    </div>
     <?php echo $this->form()->closeTag(); ?>
 </div>
 
