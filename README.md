@@ -2,6 +2,13 @@
 
 An [Omeka S](https://omeka.org/s/) module for monitoring user activity.
 
+## Module configuration
+
+The `events` database table may get very large over time. This may eventually have
+an impact on the performance of the Omeka installation. Users may use the module
+configuration form to reduce the size of the table by deleting events before a certain
+date.
+
 ## Events page
 
 The "Events" page lists events, most recent first. It only lists events that modify
@@ -34,7 +41,7 @@ results. Click "Clear filters" to clear the filters and return to the default pa
 ## Events listened to
 
 By default, the module will listen to the following events. Modules may add more
-events, but are not listed here.
+events, but they are not listed here.
 
 - `user.login`
 - `user.logout`

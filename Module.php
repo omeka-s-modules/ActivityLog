@@ -2,10 +2,15 @@
 namespace ActivityLog;
 
 use ActivityLog\Entity\ActivityLogEvent;
+use DateTime;
+use DateTimeZone;
 use Omeka\Module\AbstractModule;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\SharedEventManagerInterface;
+use Laminas\Form\Element;
+use Laminas\Mvc\Controller\AbstractController;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\Renderer\PhpRenderer;
 
 class Module extends AbstractModule
 {
@@ -32,6 +37,35 @@ SQL;
         $conn->exec('SET FOREIGN_KEY_CHECKS=0;');
         $conn->exec('DROP TABLE IF EXISTS activity_log_event;');
         $conn->exec('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    public function getConfigForm(PhpRenderer $view)
+    {
+        $element = new Element\Text('delete_before');
+        $element->setLabel($view->translate('Delete events before'));
+        $element->setOption('info', $view->translate('The events database table may get very large over time. This may eventually have an impact on the performance of your website. Use this form to reduce the size of the table by deleting events before a certain date.'));
+        $element->setAttribute('placeholder', $view->translate('yyyy-mm-dd'));
+        return $view->formRow($element);
+    }
+
+    public function handleConfigForm(AbstractController $controller)
+    {
+        $services = $this->getServiceLocator();
+        $settings = $services->get('Omeka\Settings');
+        $conn = $services->get('Omeka\Connection');
+        $postData = $controller->params()->fromPost();
+        if (isset($postData['delete_before']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $postData['delete_before'])) {
+            $dateTime = new DateTime(
+                $postData['delete_before'],
+                new DateTimeZone($settings->get('time_zone', 'UTC'))
+            );
+            $deletedCount = $conn->executeStatement(
+                'DELETE FROM activity_log_event WHERE timestamp < ?',
+                [$dateTime->getTimestamp()]
+            );
+            $controller->messenger()->addSuccess(sprintf($controller->translate('%s Activity Log events were successfully deleted.'), $deletedCount));
+        }
+        return true;
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
