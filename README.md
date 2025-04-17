@@ -5,9 +5,9 @@ An [Omeka S](https://omeka.org/s/) module for monitoring user activity.
 ## Module configuration
 
 The `events` database table may get very large over time. This may eventually have
-an impact on the performance of the Omeka installation. Users may use the module
-configuration form to reduce the size of the table by deleting events before a certain
-date.
+an impact on the performance of your Omeka installation. Users may use the module
+configuration form to reduce the size of the table by deleting all events before
+a certain date.
 
 ## Events page
 
@@ -45,7 +45,19 @@ events, but they are not listed here.
 
 - `user.login`
 - `user.logout`
-- `api.create.post` for all API resources
+- `setting.insert`
+    - for the "setting" resource
+    - for the "site_setting" resource
+    - for the "user_setting" resource
+- `setting.update`
+    - for the "setting" resource
+    - for the "site_setting" resource
+    - for the "user_setting" resource
+- `setting.delete`
+    - for the "setting" resource
+    - for the "site_setting" resource
+    - for the "user_setting" resource
+- `api.create.post`for all API resources
 - `api.update.post` for all API resources
 - `api.delete.post` for all API resources
 - `api.batch_create.post` for all API resources

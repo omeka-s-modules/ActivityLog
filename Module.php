@@ -285,6 +285,37 @@ SQL;
             );
         }
 
+        /**
+         * Log setting events.
+         *
+         * Note that pre-4.2.0 versions of Omeka S did not have setting events,
+         * so there was no way to log changes to settings.
+         */
+        $eventNames = [
+            'setting.insert',
+            'setting.update',
+            'setting.delete',
+        ];
+        foreach ($eventNames as $eventName) {
+            $sharedEventManager->attach(
+                '*',
+                $eventName,
+                function (Event $event) {
+                    $target = $event->getTarget();
+                    $params = $event->getParams();
+
+                    $eventEntity = new ActivityLogEvent;
+                    $eventEntity->setEvent($event->getName());
+                    $eventEntity->setResource($target->getTableName());
+                    $eventEntity->setResourceIdentifier($params['id']);
+                    $eventEntity->setData($params);
+
+                    $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
+                    $activityLog->logEvent($eventEntity);
+                }
+            );
+        }
+
         /*
          * Add messages to user login event logs.
          */
@@ -412,6 +443,36 @@ SQL;
                         $messages[] = sprintf($view->translate('Batch deleted "%s" resources'), $loggedEvent->resource());
                     }
                     $messages[] = $view->translate('Source: API');
+                    $event->setParam('messages', $messages);
+                }
+            );
+        }
+
+        /*
+         * Add messages to setting event logs.
+         */
+        $eventIds = [
+            'setting.insert',
+            'setting.update',
+            'setting.delete',
+        ];
+        foreach ($eventIds as $eventId) {
+            $sharedEventManager->attach(
+                $eventId,
+                'activity_log.event_messages',
+                function (Event $event) {
+                    $view = $event->getTarget();
+                    $loggedEvent = $event->getParam('loggedEvent');
+                    $messages = $event->getParam('messages');
+                    if ('setting.insert' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Inserted a "%s" setting'), $loggedEvent->resource());
+                    } elseif ('setting.update' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Updated a "%s" setting'), $loggedEvent->resource());
+                    } elseif ('setting.delete' === $loggedEvent->event()) {
+                        $messages[] = sprintf($view->translate('Deleted a "%s" setting'), $loggedEvent->resource());
+                    }
+                    $messages[] = $view->translate('Source: Connection');
+                    $messages[] = sprintf($view->translate('ID: %s'), $loggedEvent->resourceId());
                     $event->setParam('messages', $messages);
                 }
             );
