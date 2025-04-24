@@ -132,7 +132,12 @@ SQL;
                     $eventEntity = new ActivityLogEvent;
                     $eventEntity->setEvent($event->getName());
                     $eventEntity->setResource($request->getResource());
-                    $eventEntity->setResourceIdentifier($response->getContent()->getId() ?? $request->getId());
+                    // The request ID may be an array (e.g. when deleting a site).
+                    $resourceIdentifier = $response->getContent()->getId() ?? $request->getId();
+                    if (is_array($resourceIdentifier)) {
+                        $resourceIdentifier = json_encode($resourceIdentifier);
+                    }
+                    $eventEntity->setResourceIdentifier($resourceIdentifier);
                     $eventEntity->setData([
                         'request_options' => $request->getOption(),
                         'request_content' => $request->getContent(),
