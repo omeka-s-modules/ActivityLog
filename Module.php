@@ -163,7 +163,7 @@ SQL;
 
                 $eventEntity = new ActivityLogEvent;
                 $eventEntity->setEvent($event->getName());
-                $eventEntity->setResource($entity::class);
+                $eventEntity->setResource(get_class($entity));
                 $eventEntity->setResourceIdentifier($entity->getId());
 
                 $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
@@ -187,7 +187,7 @@ SQL;
 
                 $eventEntity = new ActivityLogEvent;
                 $eventEntity->setEvent($event->getName());
-                $eventEntity->setResource($entity::class);
+                $eventEntity->setResource(get_class($entity));
                 $eventEntity->setResourceIdentifier($entity->getId());
                 $eventEntity->setData([
                     'entity_changeset' => $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity),
@@ -218,7 +218,7 @@ SQL;
 
                     $eventEntity = new ActivityLogEvent;
                     $eventEntity->setEvent($event->getName());
-                    $eventEntity->setResource($entity::class);
+                    $eventEntity->setResource(get_class($entity));
                     $eventEntity->setResourceIdentifier($entity->getId());
 
                     $activityLog = $this->getServiceLocator()->get('ActivityLog\ActivityLog');
@@ -247,7 +247,7 @@ SQL;
 
                     $eventEntity = new ActivityLogEvent;
                     $eventEntity->setEvent($event->getName());
-                    $eventEntity->setResource($entity::class);
+                    $eventEntity->setResource(get_class($entity));
                     $eventEntity->setResourceIdentifier($entity->getId());
                     $eventEntity->setData([
                         'entity_changeset' => $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity),
