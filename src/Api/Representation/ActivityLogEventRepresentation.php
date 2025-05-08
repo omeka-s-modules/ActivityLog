@@ -54,7 +54,7 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
     public function dateTime()
     {
         $settings = $this->getServiceLocator()->get('Omeka\Settings');
-        $dateTime = new DateTime('@' . $this->timestamp());
+        $dateTime = DateTime::createFromFormat('U.u', sprintf('%f', $this->timestamp()));
         $dateTime->setTimezone(new DateTimeZone($settings->get('time_zone', 'UTC')));
         return $dateTime;
     }
