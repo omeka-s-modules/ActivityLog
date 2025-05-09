@@ -8,3 +8,16 @@ tr > td {
     font-size: 14px;
     overflow-wrap: anywhere;
 }
+
+.browse-controls {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.browse-controls nav.pagination {
+    display: inline-flex;
+}
+
+.browse-controls .button {
+    margin-left: auto;
+}
