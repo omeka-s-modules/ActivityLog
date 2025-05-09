@@ -79,23 +79,17 @@ class EventFilterForm extends Form
             ],
         ]);
         $this->add([
-            'type' => LaminasElement\Text::class,
+            'type' => LaminasElement\Date::class,
             'name' => 'from',
             'options' => [
                 'label' => 'From', // @translate
             ],
-            'attributes' => [
-                'placeholder' => 'From: yyyy-mm-dd', // @translate
-            ],
         ]);
         $this->add([
-            'type' => LaminasElement\Text::class,
+            'type' => LaminasElement\Date::class,
             'name' => 'before',
             'options' => [
                 'label' => 'Before', // @translate
-            ],
-            'attributes' => [
-                'placeholder' => 'Before: yyyy-mm-dd', // @translate
             ],
         ]);
     }
