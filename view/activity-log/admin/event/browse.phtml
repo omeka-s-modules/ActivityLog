@@ -70,11 +70,25 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
             <?php echo $this->formRow($eventFilterForm->get('event')); ?>
             <?php echo $this->formRow($eventFilterForm->get('resource')); ?>
             <?php echo $this->formRow($eventFilterForm->get('resource_id')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('user_id')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('user_role')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('ip')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('from')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('before')); ?>
+            <div>
+                <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
+                    <h4><?php echo $this->translate('User filters'); ?></h4>
+                </a>
+                <div class="collapsible">
+                    <?php echo $this->formRow($eventFilterForm->get('user_id')); ?>
+                    <?php echo $this->formRow($eventFilterForm->get('user_role')); ?>
+                    <?php echo $this->formRow($eventFilterForm->get('ip')); ?>
+                </div>
+            </div>
+            <div>
+                <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
+                    <h4><?php echo $this->translate('Date filters'); ?></h4>
+                </a>
+                <div class="collapsible">
+                    <?php echo $this->formRow($eventFilterForm->get('from')); ?>
+                    <?php echo $this->formRow($eventFilterForm->get('before')); ?>
+                </div>
+            </div>
             <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
             <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
         </div>
