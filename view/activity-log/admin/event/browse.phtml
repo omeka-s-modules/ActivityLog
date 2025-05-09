@@ -7,32 +7,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 
 <div class="browse-controls">
     <?php echo $this->pagination(); ?>
-</div>
-
-<div class="filter-controls">
-    <?php echo $this->form()->openTag($eventFilterForm); ?>
-    <div class="filter-column-wrapper">
-        <div class="filter-column">
-            <?php echo $this->formElement($eventFilterForm->get('id')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('event')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('resource')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('resource_id')); ?>
-        </div>
-        <div class="filter-column">
-            <?php echo $this->formElement($eventFilterForm->get('user_id')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('user_role')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('ip')); ?>
-        </div>
-        <div class="filter-column">
-            <?php echo $this->formElement($eventFilterForm->get('from')); ?>
-            <?php echo $this->formElement($eventFilterForm->get('before')); ?>
-            <div class="filter-buttons">
-                <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
-                <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
-            </div>
-        </div>
-    </div>
-    <?php echo $this->form()->closeTag(); ?>
+    <?php echo $this->hyperlink('View filters', [], ['class' => 'sidebar-content', 'data-sidebar-selector' => '#sidebar-filters']); ?>
 </div>
 
 <?php if ($loggedEvents): ?>
@@ -41,12 +16,12 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
     <thead>
         <tr>
             <th><?php echo $this->translate('ID'); ?></th>
+            <th><?php echo $this->translate('Messages'); ?></th>
             <th><?php echo $this->translate('Date'); ?></th>
             <th><?php echo $this->translate('User'); ?></th>
             <th><?php echo $this->translate('IP'); ?></th>
             <th><?php echo $this->translate('Event'); ?></th>
             <th><?php echo $this->translate('Resource'); ?></th>
-            <th><?php echo $this->translate('Messages'); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -54,11 +29,6 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
         <?php $user = $loggedEvent->user(); ?>
         <tr>
             <td><?php echo $loggedEvent->id(); ?></td>
-            <td><?php echo $loggedEvent->dateTime()->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
-            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
-            <td><?php echo $loggedEvent->ip(); ?></td>
-            <td><?php echo $loggedEvent->event(); ?></td>
-            <td><?php echo $loggedEvent->resource(); ?></td>
             <td>
                 <ul>
                     <?php foreach ($loggedEvent->messages($this) as $message): ?>
@@ -66,6 +36,11 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
                     <?php endforeach; ?>
                 </ul>
             </td>
+            <td><?php echo $loggedEvent->dateTime()->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
+            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
+            <td><?php echo $loggedEvent->ip(); ?></td>
+            <td><?php echo $loggedEvent->event(); ?></td>
+            <td><?php echo $loggedEvent->resource(); ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>
@@ -81,6 +56,30 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
         'title' => $this->translate('Close'),
     ]); ?>
     <div class="sidebar-content"></div>
+</div>
+
+<div id="sidebar-filters" class="sidebar">
+    <?php echo $this->hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $this->translate('Close'),
+    ]); ?>
+    <div class="sidebar-content">
+        <h3><?php echo $this->translate('Filter events'); ?></h3>
+        <?php echo $this->form()->openTag($eventFilterForm); ?>
+            <?php echo $this->formRow($eventFilterForm->get('id')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('event')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('resource')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('resource_id')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('user_id')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('user_role')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('ip')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('from')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('before')); ?>
+            <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
+            <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
 </div>
 
 <?php else: ?>

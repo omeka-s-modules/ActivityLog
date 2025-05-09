@@ -15,37 +15,18 @@ class EventFilterForm extends Form
         $this->add([
             'type' => LaminasElement\Text::class,
             'name' => 'id',
+            'options' => [
+                'label' => 'ID', // @translate
+            ],
             'attributes' => [
                 'placeholder' => 'Enter an ID', // @translate
             ],
         ]);
         $this->add([
             'type' => LaminasElement\Select::class,
-            'name' => 'user_id',
-            'options' => [
-                'empty_option' => 'Select a user', // @translate
-                'value_options' => $this->getUserValueOptions(),
-            ],
-        ]);
-        $this->add([
-            'type' => LaminasElement\Select::class,
-            'name' => 'user_role',
-            'options' => [
-                'empty_option' => 'Select a user role', // @translate
-                'value_options' => $this->getUserRoleValueOptions(),
-            ],
-        ]);
-        $this->add([
-            'type' => LaminasElement\Text::class,
-            'name' => 'ip',
-            'attributes' => [
-                'placeholder' => 'Enter an IP', // @translate
-            ],
-        ]);
-        $this->add([
-            'type' => LaminasElement\Select::class,
             'name' => 'event',
             'options' => [
+                'label' => 'Event',
                 'empty_option' => 'Select an event', // @translate
                 'value_options' => $this->getEventValueOptions(),
             ],
@@ -54,6 +35,7 @@ class EventFilterForm extends Form
             'type' => LaminasElement\Select::class,
             'name' => 'resource',
             'options' => [
+                'label' => 'Resource', // @translate
                 'empty_option' => 'Select a resource', // @translate
                 'value_options' => $this->getResourceValueOptions(),
             ],
@@ -61,13 +43,47 @@ class EventFilterForm extends Form
         $this->add([
             'type' => LaminasElement\Text::class,
             'name' => 'resource_id',
+            'options' => [
+                'label' => 'Resource ID', // @translate
+            ],
             'attributes' => [
                 'placeholder' => 'Enter a resource ID', // @translate
             ],
         ]);
         $this->add([
+            'type' => LaminasElement\Select::class,
+            'name' => 'user_id',
+            'options' => [
+                'label' => 'User', // @translate
+                'empty_option' => 'Select a user', // @translate
+                'value_options' => $this->getUserValueOptions(),
+            ],
+        ]);
+        $this->add([
+            'type' => LaminasElement\Select::class,
+            'name' => 'user_role',
+            'options' => [
+                'label' => 'User role', // @translate
+                'empty_option' => 'Select a user role', // @translate
+                'value_options' => $this->getUserRoleValueOptions(),
+            ],
+        ]);
+        $this->add([
+            'type' => LaminasElement\Text::class,
+            'name' => 'ip',
+            'options' => [
+                'label' => 'IP', // @translate
+            ],
+            'attributes' => [
+                'placeholder' => 'Enter an IP', // @translate
+            ],
+        ]);
+        $this->add([
             'type' => LaminasElement\Text::class,
             'name' => 'from',
+            'options' => [
+                'label' => 'From', // @translate
+            ],
             'attributes' => [
                 'placeholder' => 'From: yyyy-mm-dd', // @translate
             ],
@@ -75,6 +91,9 @@ class EventFilterForm extends Form
         $this->add([
             'type' => LaminasElement\Text::class,
             'name' => 'before',
+            'options' => [
+                'label' => 'Before', // @translate
+            ],
             'attributes' => [
                 'placeholder' => 'Before: yyyy-mm-dd', // @translate
             ],
