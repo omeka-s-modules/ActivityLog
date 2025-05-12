@@ -1,5 +1,8 @@
 <?php
 $this->headLink()->appendStylesheet($this->assetUrl('css/events.css', 'ActivityLog'));
+$this->headLink()->appendStylesheet($this->assetUrl('vendor/tablesaw/tablesaw.css', 'ActivityLog'));
+$this->headScript()->appendFile($this->assetUrl('vendor/tablesaw/tablesaw.jquery.js', 'ActivityLog'));
+$this->headScript()->appendFile($this->assetUrl('js/activity-log.js', 'ActivityLog'));
 $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 ?>
 
@@ -12,35 +15,35 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 
 <?php if ($loggedEvents): ?>
 
-<table class="tablesaw" data-tablesaw-mode="stack">
+<table class="tablesaw tablesaw-swipe" data-tablesaw-mode="swipe" data-tablesaw-swipe-media="(max-width: 1400px)">
     <thead>
         <tr>
-            <th><?php echo $this->translate('ID'); ?></th>
-            <th><?php echo $this->translate('Messages'); ?></th>
-            <th><?php echo $this->translate('Date'); ?></th>
-            <th><?php echo $this->translate('User'); ?></th>
-            <th><?php echo $this->translate('IP'); ?></th>
-            <th><?php echo $this->translate('Event'); ?></th>
-            <th><?php echo $this->translate('Resource'); ?></th>
+            <th class="event-id" data-tablesaw-priority="persist"><?php echo $this->translate('ID'); ?></th>
+            <th class="event-messages" data-tablesaw-priority="persist"><?php echo $this->translate('Messages'); ?></th>
+            <th class="event-date"><?php echo $this->translate('Date'); ?></th>
+            <th class="event-user"><?php echo $this->translate('User'); ?></th>
+            <th class="event-ip"><?php echo $this->translate('IP'); ?></th>
+            <th class="event-name"><?php echo $this->translate('Event'); ?></th>
+            <th class="event-resource"><?php echo $this->translate('Resource'); ?></th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($loggedEvents as $loggedEvent): ?>
         <?php $user = $loggedEvent->user(); ?>
         <tr>
-            <td><?php echo $loggedEvent->id(); ?></td>
-            <td>
+            <td class="event-id"><?php echo $loggedEvent->id(); ?></td>
+            <td class="event-messages">
                 <ul>
                     <?php foreach ($loggedEvent->messages($this) as $message): ?>
                     <li><?php echo $message; ?></li>
                     <?php endforeach; ?>
                 </ul>
             </td>
-            <td><?php echo $loggedEvent->dateTime()->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
-            <td><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
-            <td><?php echo $loggedEvent->ip(); ?></td>
-            <td><?php echo $loggedEvent->event(); ?></td>
-            <td><?php echo $loggedEvent->resource(); ?></td>
+            <td class="event-date"><?php echo $loggedEvent->dateTime()->format('Y-m-d<\b\r>H:i:s.v'); ?></td>
+            <td class="event-user"><?php echo $user ? sprintf('%s<br>%s', $user->link($user->name()), $user->role()) : ''; ?></td>
+            <td class="event-ip"><?php echo $loggedEvent->ip(); ?></td>
+            <td class="event-name"><?php echo $loggedEvent->event(); ?></td>
+            <td class="event-resource"><?php echo $loggedEvent->resource(); ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>
