@@ -21,3 +21,43 @@ tr > td {
 .browse-controls .button {
     margin-left: auto;
 }
+
+.sidebar-group {
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 11px;
+    margin-bottom: 12px;
+}
+
+.sidebar-group .collapsible {
+    margin-left: 12px;
+}
+
+.sidebar .expand,
+.sidebar .collapse {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar .expand h4 {
+    font-weight: normal;
+}
+
+.sidebar .collapse h4 {
+    font-weight: bold;
+}
+
+.sidebar .collapse {
+    border-bottom: 3px solid #dfdfdf;
+    padding-bottom: 3px;
+    margin-bottom: 12px;
+}
+
+.sidebar .collapsible .field-meta {
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
+.sidebar .collapsible .field-meta label {
+    font-weight: normal;
+    padding-bottom: 0;
+}

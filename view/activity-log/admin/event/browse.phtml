@@ -70,7 +70,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
             <?php echo $this->formRow($eventFilterForm->get('event')); ?>
             <?php echo $this->formRow($eventFilterForm->get('resource')); ?>
             <?php echo $this->formRow($eventFilterForm->get('resource_id')); ?>
-            <div>
+            <div class="sidebar-group">
                 <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
                     <h4><?php echo $this->translate('User filters'); ?></h4>
                 </a>
@@ -80,7 +80,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
                     <?php echo $this->formRow($eventFilterForm->get('ip')); ?>
                 </div>
             </div>
-            <div>
+            <div class="sidebar-group">
                 <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
                     <h4><?php echo $this->translate('Date filters'); ?></h4>
                 </a>
