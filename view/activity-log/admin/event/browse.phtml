@@ -69,10 +69,24 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
     <div class="sidebar-content">
         <h3 id="filter-events-heading"><?php echo $this->translate('Filter events'); ?></h3>
         <?php echo $this->form()->openTag($eventFilterForm); ?>
-            <?php echo $this->formRow($eventFilterForm->get('id')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('event')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('resource')); ?>
-            <?php echo $this->formRow($eventFilterForm->get('resource_id')); ?>
+        <div class="sidebar-group">
+                <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
+                    <h4><?php echo $this->translate('Event filters'); ?></h4>
+                </a>
+                <div class="collapsible">
+                    <?php echo $this->formRow($eventFilterForm->get('id')); ?>
+                    <?php echo $this->formRow($eventFilterForm->get('event')); ?>
+                </div>
+            </div>
+            <div class="sidebar-group">
+                <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
+                    <h4><?php echo $this->translate('Resource filters'); ?></h4>
+                </a>
+                <div class="collapsible">
+                    <?php echo $this->formRow($eventFilterForm->get('resource')); ?>
+                    <?php echo $this->formRow($eventFilterForm->get('resource_id')); ?>
+                </div>
+            </div>
             <div class="sidebar-group">
                 <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
                     <h4><?php echo $this->translate('User filters'); ?></h4>
@@ -106,19 +120,3 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 </div>
 
 <?php endif; ?>
-
-<script>
-
-// Focus the first input of the filters sidebar after clicking "View filters".
-$('#sidebar-filters').on('o:sidebar-opened', function(e) {
-    setTimeout(() => {
-        $(this).find('input:first').trigger('focus');
-    }, 20); // Must wait until the sidebar is fully open before focusing.
-});
-
-// Focus the "View filters" button after closing the filters sidebar.
-$(document).on('click', '#sidebar-filters .sidebar-close', function(e) {
-    $('.view-filters-button:first').trigger('focus');
-});
-
-</script>
