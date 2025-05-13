@@ -7,7 +7,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 
 <div class="browse-controls">
     <?php echo $this->pagination(); ?>
-    <?php echo $this->hyperlink('View filters', '#', ['class' => 'sidebar-content button', 'role' => 'button', 'data-sidebar-selector' => '#sidebar-filters']); ?>
+    <?php echo $this->hyperlink('View filters', '#', ['class' => 'view-filters-button sidebar-content button', 'role' => 'button', 'data-sidebar-selector' => '#sidebar-filters']); ?>
 </div>
 
 <?php if ($loggedEvents): ?>
@@ -89,7 +89,7 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
                     <?php echo $this->formRow($eventFilterForm->get('before')); ?>
                 </div>
             </div>
-            <button type="submit"><?php echo $this->translate('Apply filters'); ?></button>
+            <button type="submit" class="apply-filters-button"><?php echo $this->translate('Apply filters'); ?></button>
             <a class="button" href="<?php echo $this->escapeHtml($this->url(null, [], true)); ?>"><?php echo $this->translate('Clear filters'); ?></a>
         </div>
         <?php echo $this->form()->closeTag(); ?>
@@ -103,3 +103,19 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
 </div>
 
 <?php endif; ?>
+
+<script>
+
+// Focus the first input of the filters sidebar after clicking "View filters".
+$('#sidebar-filters').on('o:sidebar-opened', function(e) {
+    setTimeout(() => {
+        $(this).find('input:first').trigger('focus');
+    }, 20); // Must wait until the sidebar is fully open before focusing.
+});
+
+// Focus the "View filters" button after closing the filters sidebar.
+$(document).on('click', '#sidebar-filters .sidebar-close', function(e) {
+    $('.view-filters-button:first').trigger('focus');
+});
+
+</script>
