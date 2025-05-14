@@ -16,7 +16,7 @@ class EventFilterForm extends Form
             'type' => LaminasElement\Text::class,
             'name' => 'id',
             'options' => [
-                'label' => 'Event ID', // @translate
+                'label' => 'ID', // @translate
             ],
             'attributes' => [
                 'placeholder' => 'Enter an ID', // @translate
@@ -26,7 +26,7 @@ class EventFilterForm extends Form
             'type' => LaminasElement\Select::class,
             'name' => 'event',
             'options' => [
-                'label' => 'Event name',
+                'label' => 'Event',
                 'empty_option' => 'Select an event', // @translate
                 'value_options' => $this->getEventValueOptions(),
             ],
@@ -35,7 +35,7 @@ class EventFilterForm extends Form
             'type' => LaminasElement\Select::class,
             'name' => 'resource',
             'options' => [
-                'label' => 'Resource name', // @translate
+                'label' => 'Resource', // @translate
                 'empty_option' => 'Select a resource', // @translate
                 'value_options' => $this->getResourceValueOptions(),
             ],

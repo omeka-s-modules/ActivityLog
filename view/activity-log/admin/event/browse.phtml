@@ -69,15 +69,8 @@ $this->htmlElement('body')->appendAttribute('class', 'activity-log-events');
     <div class="sidebar-content">
         <h3 id="filter-events-heading"><?php echo $this->translate('Filter events'); ?></h3>
         <?php echo $this->form()->openTag($eventFilterForm); ?>
-        <div class="sidebar-group">
-                <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
-                    <h4><?php echo $this->translate('Event filters'); ?></h4>
-                </a>
-                <div class="collapsible">
-                    <?php echo $this->formRow($eventFilterForm->get('id')); ?>
-                    <?php echo $this->formRow($eventFilterForm->get('event')); ?>
-                </div>
-            </div>
+            <?php echo $this->formRow($eventFilterForm->get('id')); ?>
+            <?php echo $this->formRow($eventFilterForm->get('event')); ?>
             <div class="sidebar-group">
                 <a href="#" class="expand" aria-label="<?php echo $this->escapeHtml($this->translate('Expand')); ?>" title="<?php echo $this->escapeHtml($this->translate('Expand')); ?>">
                     <h4><?php echo $this->translate('Resource filters'); ?></h4>
