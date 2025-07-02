@@ -18,7 +18,7 @@ class ActivityLogEventRepresentation extends AbstractEntityRepresentation
         $user = $this->user();
         return [
             'o:user' => $user ? $user->getReference() : null,
-            'o:timestamp' => $this->getDateTime($this->timestamp()),
+            'o:timestamp' => $this->timestamp(),
             'o-module-activity_log:ip' => $this->ip(),
             'o-module-activity_log:event' => $this->event(),
             'o-module-activity_log:resource' => $this->resource(),
