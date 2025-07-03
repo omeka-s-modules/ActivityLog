@@ -26,8 +26,8 @@ class EventFilterForm extends Form
             'type' => LaminasElement\Select::class,
             'name' => 'event',
             'options' => [
-                'label' => 'Event',
-                'empty_option' => 'Select an event', // @translate
+                'label' => 'Event name', // @translate
+                'empty_option' => 'Select an event by name', // @translate
                 'value_options' => $this->getEventValueOptions(),
             ],
         ]);
