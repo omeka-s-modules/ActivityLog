@@ -376,7 +376,16 @@ SQL;
                     $messages[] = sprintf($view->translate('ID: %s'), $loggedEvent->resourceId());
                     $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
                     if ($resource) {
-                        $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resource->url()), $view->translate('View resource'));
+                        try {
+                            $resourceUrl = $resource->url();
+                        } catch (\Exception $e) {
+                            $resourceUrl = null; // Cannot resolve a resource URL.
+                        }
+                        if ($resourceUrl) {
+                            $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resourceUrl), $view->translate('View resource'));
+                        } else {
+                            $messages[] = sprintf('[%s]', $view->translate('Resource unviewable'));
+                        }
                     } else {
                         $messages[] = sprintf('[%s]', $view->translate('Resource not found'));
                     }
