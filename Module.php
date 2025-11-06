@@ -4,6 +4,7 @@ namespace ActivityLog;
 use ActivityLog\Entity\ActivityLogEvent;
 use DateTime;
 use DateTimeZone;
+use Exception;
 use Omeka\Module\AbstractModule;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\SharedEventManagerInterface;
@@ -374,12 +375,19 @@ SQL;
                     }
                     $messages[] = $view->translate('Source: API');
                     $messages[] = sprintf($view->translate('ID: %s'), $loggedEvent->resourceId());
-                    $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
+                    try {
+                        $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
+                    } catch (Exception $e) {
+                        // The API does not support the resource. Usually caused
+                        // by an uninstalled or deactivated module.
+                        $resource = null;
+                    }
                     if ($resource) {
                         try {
                             $resourceUrl = $resource->url();
-                        } catch (\Exception $e) {
-                            $resourceUrl = null; // Cannot resolve a resource URL.
+                        } catch (Exception $e) {
+                            // Cannot resolve a resource URL.
+                            $resourceUrl = null;
                         }
                         if ($resourceUrl) {
                             $messages[] = sprintf('<a href="%s">%s</a>', $view->escapeHtml($resourceUrl), $view->translate('View resource'));
