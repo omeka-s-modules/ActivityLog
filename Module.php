@@ -378,11 +378,14 @@ SQL;
                     try {
                         $resource = $view->api()->searchOne($loggedEvent->resource(), ['id' => $loggedEvent->resourceId()])->getContent();
                     } catch (Exception $e) {
-                        // The API does not support the resource. Usually caused
-                        // by an uninstalled or deactivated module.
+                        // The API does not support the resource. This is usually
+                        // caused by an uninstalled or deactivated module.
                         $resource = null;
                     }
                     if ($resource) {
+                        // Inject the service locator in the unusual event that
+                        // the resource representation does not already have one.
+                        $resource->setServiceLocator($this->getServiceLocator());
                         try {
                             $resourceUrl = $resource->url();
                         } catch (Exception $e) {
